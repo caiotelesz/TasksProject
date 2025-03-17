@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: rest-spring-boot
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tasks_project?useTimezone=true&serverTimezone=UTC
+    username: root
+    password: 2022
+  jpa:
+    hibernate:
+      ddl-auto: update #Atraves daqui cria a tabela
+    properties:
+      hibernate:
+    show-sql: false
+    open-in-view: false
