@@ -1,6 +1,6 @@
 package com.projeto.tarefa.controllers;
 
-import com.projeto.tarefa.model.Tasks;
+import com.projeto.tarefa.data.dto.v1.TasksDTO;
 import com.projeto.tarefa.services.TasksServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,7 +21,7 @@ public class TasksController {
                     MediaType.APPLICATION_JSON_VALUE
             }
     )
-    public List<Tasks> findAll() {
+    public List<TasksDTO> findAll() {
         return tasksServices.findAll();
     }
 
@@ -31,7 +31,7 @@ public class TasksController {
                     MediaType.APPLICATION_JSON_VALUE
             }
     )
-    public Tasks findById(@PathVariable("id") Long id) {
+    public TasksDTO findById(@PathVariable("id") Long id) {
         return tasksServices.findById(id);
     }
 
@@ -43,7 +43,7 @@ public class TasksController {
                     MediaType.APPLICATION_JSON_VALUE
             }
     )
-    public Tasks create(@RequestBody Tasks tasks) {
+    public TasksDTO create(@RequestBody TasksDTO tasks) {
         return tasksServices.create(tasks);
     }
 
@@ -52,8 +52,8 @@ public class TasksController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Tasks> update(@PathVariable("id") Long id, @RequestBody Tasks tasks) {
-        Tasks updatedTask = tasksServices.update(id, tasks);
+    public ResponseEntity<TasksDTO> update(@PathVariable("id") Long id, @RequestBody TasksDTO tasks) {
+        TasksDTO updatedTask = tasksServices.update(id, tasks);
         return ResponseEntity.ok(updatedTask);
     }
 

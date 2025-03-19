@@ -1,5 +1,6 @@
 package com.projeto.tarefa.services;
 
+import com.projeto.tarefa.data.dto.v1.TasksDTO;
 import com.projeto.tarefa.model.Tasks;
 import com.projeto.tarefa.repository.TasksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,9 @@ import org.springframework.util.Assert;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static com.projeto.tarefa.mapper.ObjectMapper.parseListObjects;
+import static com.projeto.tarefa.mapper.ObjectMapper.parseObject;
+
 @Service
 public class TasksServices {
 
@@ -17,32 +21,39 @@ public class TasksServices {
     @Autowired
     TasksRepository tasksRepository;
 
-    public List<Tasks> findAll() {
+    public List<TasksDTO> findAll() {
         log.info("Find all tasks");
-        List<Tasks> list = tasksRepository.findAll().stream().toList();
 
-        return list;
+        var task = parseListObjects(tasksRepository.findAll(), TasksDTO.class);
+//        task.forEach(this::addHateaoasLinks);
+        return task;
     }
 
-    public Tasks findById(Long id) {
+    public TasksDTO findById(Long id) {
         log.info("Find task by Id");
 
         var entity = tasksRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found for this id"));
 
-        return entity;
+        var dto = parseObject(entity, TasksDTO.class);
+//        addHateaoasLinks(dto);
+        return dto;
     }
 
-    public Tasks create(Tasks tasks) {
+    public TasksDTO create(TasksDTO tasks) {
 
         Assert.isNull(tasks.getId(), "Tasks cannot be null");
 
         log.info("Creating one task");
 
-        return tasksRepository.save(tasks);
+        var entity = parseObject(tasks, Tasks.class);
+
+        var dto = parseObject(tasksRepository.save(entity), TasksDTO.class);
+//        addHateaoasLinks(dto);
+        return dto;
     }
 
-    public Tasks update(Long id, Tasks tasks) {
+    public TasksDTO update(Long id, TasksDTO tasks) {
 
         Tasks entity = tasksRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found for this id"));
@@ -53,7 +64,9 @@ public class TasksServices {
         entity.setDescription(tasks.getDescription());
         entity.setStatus(tasks.getStatus());
 
-        return tasksRepository.save(entity);
+        var dto = parseObject(tasksRepository.save(entity), TasksDTO.class);
+//        addHateaoasLinks(dto);
+        return dto;
     }
 
     public void delete(Long id) {
@@ -64,4 +77,12 @@ public class TasksServices {
 
         tasksRepository.delete(entity);
     }
+
+//    private void addHateaoasLinks(TasksDTO dto) {
+//        dto.add(linkTo(methodOn(TasksController.class).findById(dto.getId())).withSelfRel().withType("GET")); // findById
+//        dto.add(linkTo(methodOn(TasksController.class).delete(dto.getId())).withRel("delete").withType("DELETE")); // delete
+//        dto.add(linkTo(methodOn(TasksController.class).findAll()).withRel("findAll").withType("GET")); // findAll
+//        dto.add(linkTo(methodOn(TasksController.class).create(dto)).withRel("create").withType("POST")); // create
+//        dto.add(linkTo(methodOn(TasksController.class).update(dto.getId(), dto)).withRel("update").withType("PUT")); // update
+//    }
 }
