@@ -1,11 +1,12 @@
 package com.projeto.tarefa.data.dto.v1;
 
 import com.projeto.tarefa.model.enums.Status;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-public class TasksDTO implements Serializable {
+public class TasksDTO extends RepresentationModel<TasksDTO> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

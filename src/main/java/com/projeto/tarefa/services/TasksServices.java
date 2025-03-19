@@ -1,5 +1,6 @@
 package com.projeto.tarefa.services;
 
+import com.projeto.tarefa.controllers.TasksController;
 import com.projeto.tarefa.data.dto.v1.TasksDTO;
 import com.projeto.tarefa.model.Tasks;
 import com.projeto.tarefa.repository.TasksRepository;
@@ -12,6 +13,8 @@ import java.util.logging.Logger;
 
 import static com.projeto.tarefa.mapper.ObjectMapper.parseListObjects;
 import static com.projeto.tarefa.mapper.ObjectMapper.parseObject;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class TasksServices {
@@ -25,7 +28,7 @@ public class TasksServices {
         log.info("Find all tasks");
 
         var task = parseListObjects(tasksRepository.findAll(), TasksDTO.class);
-//        task.forEach(this::addHateaoasLinks);
+        task.forEach(this::addHateaoasLinks);
         return task;
     }
 
@@ -36,7 +39,7 @@ public class TasksServices {
                 .orElseThrow(() -> new IllegalArgumentException("Not found for this id"));
 
         var dto = parseObject(entity, TasksDTO.class);
-//        addHateaoasLinks(dto);
+        addHateaoasLinks(dto);
         return dto;
     }
 
@@ -49,7 +52,7 @@ public class TasksServices {
         var entity = parseObject(tasks, Tasks.class);
 
         var dto = parseObject(tasksRepository.save(entity), TasksDTO.class);
-//        addHateaoasLinks(dto);
+        addHateaoasLinks(dto);
         return dto;
     }
 
@@ -65,7 +68,7 @@ public class TasksServices {
         entity.setStatus(tasks.getStatus());
 
         var dto = parseObject(tasksRepository.save(entity), TasksDTO.class);
-//        addHateaoasLinks(dto);
+        addHateaoasLinks(dto);
         return dto;
     }
 
@@ -78,11 +81,11 @@ public class TasksServices {
         tasksRepository.delete(entity);
     }
 
-//    private void addHateaoasLinks(TasksDTO dto) {
-//        dto.add(linkTo(methodOn(TasksController.class).findById(dto.getId())).withSelfRel().withType("GET")); // findById
-//        dto.add(linkTo(methodOn(TasksController.class).delete(dto.getId())).withRel("delete").withType("DELETE")); // delete
-//        dto.add(linkTo(methodOn(TasksController.class).findAll()).withRel("findAll").withType("GET")); // findAll
-//        dto.add(linkTo(methodOn(TasksController.class).create(dto)).withRel("create").withType("POST")); // create
-//        dto.add(linkTo(methodOn(TasksController.class).update(dto.getId(), dto)).withRel("update").withType("PUT")); // update
-//    }
+    private void addHateaoasLinks(TasksDTO dto) {
+        dto.add(linkTo(methodOn(TasksController.class).findById(dto.getId())).withSelfRel().withType("GET")); // findById
+        dto.add(linkTo(methodOn(TasksController.class).delete(dto.getId())).withRel("delete").withType("DELETE")); // delete
+        dto.add(linkTo(methodOn(TasksController.class).findAll()).withRel("findAll").withType("GET")); // findAll
+        dto.add(linkTo(methodOn(TasksController.class).create(dto)).withRel("create").withType("POST")); // create
+        dto.add(linkTo(methodOn(TasksController.class).update(dto.getId(), dto)).withRel("update").withType("PUT")); // update
+    }
 }
